@@ -1,0 +1,9 @@
+{
+  "name": "forsikringoversikt-scripts",
+  "version": "1.0.0",
+  "description": "Artikkelgenerator for Forsikringoversikt.no",
+  "scripts": {
+    "generer": "node generer-artikkel.js"
+  },
+  "dependencies": {}
+}

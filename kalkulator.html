@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="nb">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Forsikringskalkulator 2026 – Sammenlign priser | Forsikringoversikt.no</title>
+<meta name="description" content="Sammenlign priser på bilforsikring, innboforsikring og mer. Gratis kalkulator med reelle 2026-priser.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+<style>
+.kalk-hero { background: linear-gradient(135deg, #1a2744, #2d3f6b); padding: 60px 24px 40px; text-align: center; }
+.kalk-hero h1 { color: white; font-size: clamp(1.8rem,4vw,2.8rem); margin-bottom: 10px; }
+.kalk-hero p { color: rgba(255,255,255,0.75); max-width: 520px; margin: 0 auto; }
+.kalk-section { padding: 60px 0; }
+.kalk-tabs { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 32px; }
+.kalk-tab { padding: 10px 22px; border-radius: 50px; border: 2px solid var(--border); background: white; font-family: 'Sora', sans-serif; font-size: 0.88rem; font-weight: 600; cursor: pointer; transition: all .2s; color: var(--text-mid); }
+.kalk-tab.active { background: var(--accent); border-color: var(--accent); color: white; }
+.kalk-tab:hover:not(.active) { border-color: var(--accent); color: var(--accent); }
+.kalk-grid { display: grid; grid-template-columns: 1fr 1.2fr; gap: 28px; }
+@media(max-width:700px){ .kalk-grid { grid-template-columns: 1fr; } }
+.kalk-panel { background: white; border-radius: 20px; padding: 28px; box-shadow: 0 2px 12px var(--shadow); border: 1px solid var(--border); }
+.kalk-panel h3 { font-size: 1rem; font-weight: 700; margin-bottom: 22px; }
+.field { margin-bottom: 20px; }
+.field label { display: flex; justify-content: space-between; font-size: 0.78rem; font-weight: 700; color: var(--text); margin-bottom: 8px; text-transform: uppercase; letter-spacing: .05em; }
+.field label span { color: var(--accent); font-size: 0.88rem; text-transform: none; letter-spacing: 0; font-weight: 800; }
+input[type=range] { width: 100%; -webkit-appearance: none; height: 5px; background: var(--border); border-radius: 3px; outline: none; cursor: pointer; }
+input[type=range]::-webkit-slider-thumb { -webkit-appearance: none; width: 22px; height: 22px; background: var(--accent); border-radius: 50%; border: 3px solid white; box-shadow: 0 0 0 1px var(--accent); }
+.range-labels { display: flex; justify-content: space-between; font-size: 0.7rem; color: var(--text-light); margin-top: 5px; }
+select { width: 100%; padding: 11px 14px; background: var(--bg); border: 1.5px solid var(--border); border-radius: 10px; color: var(--text); font-family: 'Sora', sans-serif; font-size: 0.88rem; appearance: none; cursor: pointer; }
+.switch-row { display: flex; align-items: center; gap: 12px; margin: 20px 0; font-size: 0.88rem; font-weight: 600; color: var(--text); }
+.switch { position: relative; width: 46px; height: 25px; cursor: pointer; }
+.switch input { display: none; }
+.slider { position: absolute; inset: 0; background: var(--border); border-radius: 13px; transition: .3s; }
+.slider::before { content: ''; position: absolute; width: 19px; height: 19px; border-radius: 50%; background: white; top: 3px; left: 3px; transition: .3s; }
+.switch input:checked + .slider { background: var(--accent); }
+.switch input:checked + .slider::before { transform: translateX(21px); }
+.results-panel { background: white; border-radius: 20px; padding: 28px; box-shadow: 0 2px 12px var(--shadow); border: 1px solid var(--border); }
+.results-panel h3 { font-size: 1rem; font-weight: 700; margin-bottom: 20px; }
+.result-row { display: flex; justify-content: space-between; align-items: center; padding: 14px 16px; border-radius: 12px; margin-bottom: 10px; border: 2px solid var(--border); position: relative; transition: border-color .2s; flex-wrap: wrap; gap: 8px; }
+.result-row.best { border-color: var(--green); background: #f0fdf4; }
+.best-badge { position: absolute; top: -10px; left: 14px; background: var(--green); color: white; font-size: 0.62rem; font-weight: 800; letter-spacing: .06em; text-transform: uppercase; padding: 2px 9px; border-radius: 4px; }
+.company-name { font-weight: 700; font-size: 0.95rem; color: var(--text); }
+.company-dot { display: inline-block; width: 10px; height: 10px; border-radius: 50%; margin-right: 8px; vertical-align: middle; }
+.price-yr { font-size: 1.25rem; font-weight: 800; color: var(--text); }
+.price-mo { font-size: 0.72rem; color: var(--text-light); }
+.savings-banner { margin-top: 16px; padding: 12px 16px; background: var(--accent-light); border: 1px solid #93c5fd; border-radius: 10px; font-size: 0.82rem; color: #1e40af; }
+.savings-banner strong { color: var(--green); }
+.affiliate-btn { display: inline-block; padding: 7px 16px; background: var(--accent); color: white; font-family: 'Sora', sans-serif; font-size: 0.75rem; font-weight: 700; border-radius: 8px; transition: background .2s; flex-shrink: 0; }
+.affiliate-btn:hover { background: #1d4ed8; }
+.affiliate-btn.best-btn { background: var(--green); }
+.affiliate-btn.best-btn:hover { background: #15803d; }
+.tab-content { display: none; }
+.tab-content.active { display: block; }
+.alert { display: flex; gap: 10px; background: #fffbeb; border: 1px solid #fcd34d; padding: 12px 16px; border-radius: 10px; margin-top: 16px; font-size: 0.78rem; color: #92400e; }
+</style>
+</head>
+<body>
+
+<header class="site-header">
+  <div class="header-inner">
+    <a href="index.html" class="logo">🛡️ Forsikring<span class="logo-accent">oversikt</span>.no</a>
+    <nav class="main-nav">
+      <a href="bilforsikring.html">Bil</a>
+      <a href="innboforsikring.html">Innbo</a>
+      <a href="reiseforsikring.html">Reise</a>
+      <a href="husforsikring.html">Hus</a>
+      <a href="artikler.html">Artikler</a>
+      <a href="kalkulator.html" class="nav-cta">Sammenlign →</a>
+    </nav>
+    <button class="hamburger" onclick="toggleMenu()"><span></span><span></span><span></span></button>
+  </div>
+  <nav class="mobile-menu" id="mobileMenu">
+    <a href="bilforsikring.html">🚗 Bilforsikring</a>
+    <a href="innboforsikring.html">🏠 Innboforsikring</a>
+    <a href="reiseforsikring.html">✈️ Reiseforsikring</a>
+    <a href="husforsikring.html">🏡 Husforsikring</a>
+    <a href="artikler.html">📖 Artikler</a>
+  </nav>
+</header>
+
+<section class="kalk-hero">
+  <h1>🧮 Forsikringskalkulator 2026</h1>
+  <p>Sammenlign priser fra alle store selskaper basert på dine opplysninger</p>
+</section>
+
+<section class="kalk-section">
+  <div class="container">
+    <div class="kalk-tabs">
+      <button class="kalk-tab active" onclick="switchTab('bil',this)">🚗 Bilforsikring</button>
+      <button class="kalk-tab" onclick="switchTab('innbo',this)">🏠 Innboforsikring</button>
+      <button class="kalk-tab" onclick="switchTab('reise',this)">✈️ Reiseforsikring</button>
+      <button class="kalk-tab" onclick="switchTab('hus',this)">🏡 Husforsikring</button>
+    </div>
+
+    <!-- BIL -->
+    <div id="tab-bil" class="tab-content active">
+      <div class="kalk-grid">
+        <div class="kalk-panel">
+          <h3>⚙️ Dine opplysninger</h3>
+          <div class="field"><label>Alder <span id="age-val">35 år</span></label><input type="range" id="age" min="18" max="70" value="35" oninput="updateBil()"><div class="range-labels"><span>18 år</span><span>70 år</span></div></div>
+          <div class="field"><label>Bonus <span id="bonus-val">60%</span></label><input type="range" id="bonus" min="0" max="75" step="5" value="60" oninput="updateBil()"><div class="range-labels"><span>0%</span><span>75%</span></div></div>
+          <div class="field"><label>Kjørelengde/år <span id="km-val">15 000 km</span></label><input type="range" id="km" min="5000" max="30000" step="1000" value="15000" oninput="updateBil()"><div class="range-labels"><span>5 000</span><span>30 000</span></div></div>
+          <div class="field"><label>Egenandel <span id="eg-val">8 000 kr</span></label><input type="range" id="eg" min="4000" max="20000" step="1000" value="8000" oninput="updateBil()"><div class="range-labels"><span>4 000</span><span>20 000</span></div></div>
+          <div class="field"><label>Dekning</label><select id="coverage" onchange="updateBil()"><option value="ansvar">Ansvar</option><option value="delkasko">Delkasko</option><option value="kasko" selected>Kasko</option><option value="super">Super/Pluss</option></select></div>
+          <div class="field"><label>Biltype</label><select id="biltype" onchange="updateBil()"><option value="normal">Bensin/Diesel</option><option value="elbil">Elbil</option><option value="ny">Ny bil (under 3 år)</option></select></div>
+          <div class="switch-row"><label class="switch"><input type="checkbox" id="samle" onchange="updateBil()"><span class="slider"></span></label>Samlerabatt</div>
+        </div>
+        <div class="results-panel"><h3>📋 Estimerte priser</h3><div id="bil-results"></div><div class="savings-banner" id="savings-msg"></div><div class="alert">⚠️ Priser er estimater. Innhent bindende tilbud direkte fra selskapet.</div></div>
+      </div>
+    </div>
+
+    <!-- INNBO -->
+    <div id="tab-innbo" class="tab-content">
+      <div class="kalk-grid">
+        <div class="kalk-panel">
+          <h3>⚙️ Dine opplysninger</h3>
+          <div class="field"><label>Forsikringssum <span id="innbo-sum-val">800 000 kr</span></label><input type="range" id="innbo-sum" min="200000" max="2000000" step="50000" value="800000" oninput="updateInnbo()"><div class="range-labels"><span>200 000</span><span>2 mill</span></div></div>
+          <div class="field"><label>Boligtype</label><select id="innbo-type" onchange="updateInnbo()"><option value="leilighet">Leilighet</option><option value="rekkehus">Rekkehus</option><option value="enebolig">Enebolig</option></select></div>
+          <div class="switch-row"><label class="switch"><input type="checkbox" id="innbo-samle" onchange="updateInnbo()"><span class="slider"></span></label>Samlerabatt</div>
+        </div>
+        <div class="results-panel"><h3>📋 Estimerte priser</h3><div id="innbo-results"></div></div>
+      </div>
+    </div>
+
+    <!-- REISE -->
+    <div id="tab-reise" class="tab-content">
+      <div class="kalk-grid">
+        <div class="kalk-panel">
+          <h3>⚙️ Dine opplysninger</h3>
+          <div class="field"><label>Antall reisende</label><select id="reise-antall" onchange="updateReise()"><option value="1">1 person</option><option value="2" selected>2 voksne</option><option value="familie">Familie</option></select></div>
+          <div class="field"><label>Dekning</label><select id="reise-dekning" onchange="updateReise()"><option value="basis">Basis</option><option value="utvidet" selected>Utvidet</option><option value="premium">Premium</option></select></div>
+          <div class="switch-row"><label class="switch"><input type="checkbox" id="reise-samle" onchange="updateReise()"><span class="slider"></span></label>Samlerabatt</div>
+        </div>
+        <div class="results-panel"><h3>📋 Estimerte priser</h3><div id="reise-results"></div></div>
+      </div>
+    </div>
+
+    <!-- HUS -->
+    <div id="tab-hus" class="tab-content">
+      <div class="kalk-grid">
+        <div class="kalk-panel">
+          <h3>⚙️ Dine opplysninger</h3>
+          <div class="field"><label>Boligens alder</label><select id="hus-alder" onchange="updateHus()"><option value="ny">0–10 år</option><option value="middels" selected>10–30 år</option><option value="gammel">30+ år</option></select></div>
+          <div class="field"><label>Forsikringssum <span id="hus-sum-val">3 000 000 kr</span></label><input type="range" id="hus-sum" min="1000000" max="8000000" step="200000" value="3000000" oninput="updateHus()"><div class="range-labels"><span>1 mill</span><span>8 mill</span></div></div>
+          <div class="switch-row"><label class="switch"><input type="checkbox" id="hus-samle" onchange="updateHus()"><span class="slider"></span></label>Samlerabatt</div>
+        </div>
+        <div class="results-panel"><h3>📋 Estimerte priser</h3><div id="hus-results"></div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer class="site-footer">
+  <div class="container">
+    <div class="footer-bottom">
+      <p>© 2026 Forsikringoversikt.no · Priser er estimater — innhent bindende tilbud direkte fra selskapet</p>
+    </div>
+  </div>
+</footer>
+
+<script src="main.js"></script>
+<script>
+function toggleMenu() { document.getElementById('mobileMenu').classList.toggle('open'); }
+function switchTab(tab, btn) {
+  document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.kalk-tab').forEach(t => t.classList.remove('active'));
+  document.getElementById('tab-' + tab).classList.add('active');
+  btn.classList.add('active');
+}
+
+const affiliateLinks = {
+  'Frende': 'https://track.adtraction.com/t/FRENDE_PROGRAM_ID/?epi=forsikringoversikt',
+  'JBF': 'https://track.adtraction.com/t/JBF_PROGRAM_ID/?epi=forsikringoversikt',
+  'IF': 'https://track.adtraction.com/t/IF_PROGRAM_ID/?epi=forsikringoversikt',
+  'Gjensidige': 'https://track.adtraction.com/t/GJENSIDIGE_PROGRAM_ID/?epi=forsikringoversikt',
+  'Storebrand': 'https://track.adtraction.com/t/STOREBRAND_PROGRAM_ID/?epi=forsikringoversikt',
+};
+
+const companies = [
+  { name:'Frende', dot:'#e85d04', base:{ansvar:3000,delkasko:5500,kasko:9000,super:14000} },
+  { name:'JBF', dot:'#5a2d91', base:{ansvar:3200,delkasko:6000,kasko:9500,super:15000} },
+  { name:'IF', dot:'#004d9f', base:{ansvar:3500,delkasko:6500,kasko:10500,super:16500} },
+  { name:'Gjensidige', dot:'#e3001b', base:{ansvar:3600,delkasko:6800,kasko:10800,super:17000} },
+  { name:'Storebrand', dot:'#007c5a', base:{ansvar:3800,delkasko:7200,kasko:11500,super:18000} },
+];
+
+function calcBil(c, coverage, age, bonus, km, eg, biltype, samle) {
+  let base = c.base[coverage];
+  let ageFactor = age < 22 ? 1.85 : age < 25 ? 1.45 : age < 30 ? 1.15 : age > 60 ? 1.10 : 1.0;
+  let bonusFactor = 1 - (bonus / 100 * 0.85);
+  let kmFactor = 0.85 + ((km - 5000) / 25000) * 0.45;
+  let egFactor = eg >= 20000 ? 0.80 : eg >= 12000 ? 0.88 : eg >= 8000 ? 0.92 : 1.0;
+  let biltypeFactor = biltype === 'elbil' ? 1.28 : biltype === 'ny' ? 1.15 : 1.0;
+  let samleF = samle ? 0.82 : 1.0;
+  let variance = 1 + (Math.sin(c.name.charCodeAt(0) * 0.1) * 0.04);
+  return Math.round(base * ageFactor * bonusFactor * kmFactor * egFactor * biltypeFactor * samleF * variance / 100) * 100;
+}
+
+function renderResults(containerId, results, showSavings) {
+  const sorted = [...results].sort((a,b) => a.price - b.price);
+  const cheapest = sorted[0].price, expensive = sorted[sorted.length-1].price;
+  document.getElementById(containerId).innerHTML = sorted.map((r,i) => `
+    <div class="result-row ${i===0?'best':''}">
+      ${i===0?'<div class="best-badge">💚 BILLIGST</div>':''}
+      <div><div class="company-name"><span class="company-dot" style="background:${r.dot}"></span>${r.name}</div></div>
+      <div class="result-price"><div class="price-yr">${r.price.toLocaleString('no')} kr</div><div class="price-mo">${Math.round(r.price/12).toLocaleString('no')} kr/mnd</div></div>
+      <a href="${affiliateLinks[r.name]||'#'}" target="_blank" rel="noopener sponsored" class="affiliate-btn ${i===0?'best-btn':''}">Få tilbud →</a>
+    </div>`).join('');
+  if (showSavings && document.getElementById('savings-msg')) {
+    document.getElementById('savings-msg').innerHTML = `🔄 Spar <strong>${(expensive-cheapest).toLocaleString('no')} kr/år</strong> ved å velge ${sorted[0].name} fremfor ${sorted[sorted.length-1].name}`;
+  }
+}
+
+function updateBil() {
+  const age=+document.getElementById('age').value, bonus=+document.getElementById('bonus').value;
+  const km=+document.getElementById('km').value, eg=+document.getElementById('eg').value;
+  const coverage=document.getElementById('coverage').value, biltype=document.getElementById('biltype').value;
+  const samle=document.getElementById('samle').checked;
+  document.getElementById('age-val').textContent=age+' år';
+  document.getElementById('bonus-val').textContent=bonus+'%';
+  document.getElementById('km-val').textContent=km.toLocaleString('no')+' km';
+  document.getElementById('eg-val').textContent=eg.toLocaleString('no')+' kr';
+  renderResults('bil-results', companies.map(c=>({...c,price:calcBil(c,coverage,age,bonus,km,eg,biltype,samle)})), true);
+}
+
+function updateInnbo() {
+  const sum=+document.getElementById('innbo-sum').value;
+  const type=document.getElementById('innbo-type').value;
+  const samle=document.getElementById('innbo-samle').checked;
+  document.getElementById('innbo-sum-val').textContent=sum.toLocaleString('no')+' kr';
+  const co=[{name:'Frende',dot:'#e85d04',m:1.0},{name:'IF',dot:'#004d9f',m:1.05},{name:'Gjensidige',dot:'#e3001b',m:1.08},{name:'Storebrand',dot:'#007c5a',m:1.12},{name:'SpareBank 1',dot:'#002776',m:1.15}];
+  const tf=type==='enebolig'?1.15:type==='rekkehus'?1.08:1.0, sf=samle?0.84:1.0;
+  renderResults('innbo-results', co.map(c=>({...c,price:Math.round(sum*0.00145*c.m*tf*sf/50)*50})), false);
+}
+
+function updateReise() {
+  const antall=document.getElementById('reise-antall').value;
+  const dekning=document.getElementById('reise-dekning').value;
+  const samle=document.getElementById('reise-samle').checked;
+  const af=antall==='1'?1.0:antall==='2'?1.7:2.5, df=dekning==='basis'?0.8:dekning==='utvidet'?1.0:1.3, sf=samle?0.85:1.0;
+  const co=[{name:'Tryg',dot:'#003f8a',m:0.93},{name:'IF',dot:'#004d9f',m:1.0},{name:'Frende',dot:'#e85d04',m:0.97},{name:'Gjensidige',dot:'#e3001b',m:1.05},{name:'Storebrand',dot:'#007c5a',m:1.10}];
+  renderResults('reise-results', co.map(c=>({...c,price:Math.round(1200*af*df*sf*c.m/50)*50})), false);
+}
+
+function updateHus() {
+  const alder=document.getElementById('hus-alder').value;
+  const sum=+document.getElementById('hus-sum').value;
+  const samle=document.getElementById('hus-samle').checked;
+  document.getElementById('hus-sum-val').textContent=sum.toLocaleString('no')+' kr';
+  const af=alder==='ny'?0.88:alder==='middels'?1.0:1.18, sf=samle?0.83:1.0;
+  const co=[{name:'Frende',dot:'#e85d04',m:0.92},{name:'IF',dot:'#004d9f',m:1.0},{name:'JBF',dot:'#5a2d91',m:0.97},{name:'Gjensidige',dot:'#e3001b',m:1.06},{name:'Storebrand',dot:'#007c5a',m:1.12}];
+  renderResults('hus-results', co.map(c=>({...c,price:Math.round(sum*0.0028*af*sf*c.m/200)*200})), false);
+}
+
+updateBil(); updateInnbo(); updateReise(); updateHus();
+</script>
+</body>
+</html>

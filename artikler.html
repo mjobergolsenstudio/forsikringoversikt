@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="nb">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Artikler om forsikring 2026 | Forsikringoversikt.no</title>
+<meta name="description" content="Les våre artikler om bilforsikring, innboforsikring, reiseforsikring og sparetips. Oppdatert ukentlig.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header class="site-header">
+  <div class="header-inner">
+    <a href="index.html" class="logo">🛡️ Forsikring<span class="logo-accent">oversikt</span>.no</a>
+    <nav class="main-nav">
+      <a href="bilforsikring.html">Bil</a>
+      <a href="innboforsikring.html">Innbo</a>
+      <a href="reiseforsikring.html">Reise</a>
+      <a href="husforsikring.html">Hus</a>
+      <a href="artikler.html" style="color:var(--accent);font-weight:700">Artikler</a>
+      <a href="kalkulator.html" class="nav-cta">Sammenlign →</a>
+    </nav>
+    <button class="hamburger" onclick="toggleMenu()"><span></span><span></span><span></span></button>
+  </div>
+  <nav class="mobile-menu" id="mobileMenu">
+    <a href="bilforsikring.html">🚗 Bilforsikring</a>
+    <a href="innboforsikring.html">🏠 Innboforsikring</a>
+    <a href="reiseforsikring.html">✈️ Reiseforsikring</a>
+    <a href="husforsikring.html">🏡 Husforsikring</a>
+    <a href="artikler.html">📖 Artikler</a>
+    <a href="kalkulator.html">🧮 Sammenlign</a>
+  </nav>
+</header>
+
+<section style="background:linear-gradient(135deg,#1a2744,#2d3f6b);padding:60px 24px 40px;text-align:center">
+  <h1 style="color:white;font-size:clamp(1.8rem,4vw,2.8rem);margin-bottom:10px">📖 Alle artikler</h1>
+  <p style="color:rgba(255,255,255,0.75);max-width:480px;margin:0 auto">Oppdatert ukentlig med tips, guider og nyheter om norske forsikringer</p>
+</section>
+
+<section style="padding:60px 0">
+  <div class="container">
+    <div class="articles-grid" id="artiklerGrid">
+      <a href="bilforsikring.html" class="article-card">
+        <div class="article-card-img" style="background:#dbeafe">🚗</div>
+        <div class="article-card-body"><span class="article-tag">Bilforsikring</span><h3>Prissjokk på bilforsikring 2026</h3><p>Bilforsikring har steget 16,6% det siste året. Slik sparer du.</p><div class="article-meta"><span>📅 April 2026</span><span>⏱️ 5 min</span></div></div>
+      </a>
+      <a href="innboforsikring.html" class="article-card">
+        <div class="article-card-img" style="background:#dcfce7">🏠</div>
+        <div class="article-card-body"><span class="article-tag">Innboforsikring</span><h3>Hva dekker innboforsikringen?</h3><p>De fleste tror de er bedre dekket enn de er.</p><div class="article-meta"><span>📅 April 2026</span><span>⏱️ 4 min</span></div></div>
+      </a>
+      <a href="reiseforsikring.html" class="article-card">
+        <div class="article-card-img" style="background:#ffedd5">✈️</div>
+        <div class="article-card-body"><span class="article-tag">Reiseforsikring</span><h3>Er kortforsikringen god nok?</h3><p>Her er hva den faktisk dekker — og hva du kan mangle.</p><div class="article-meta"><span>📅 Mars 2026</span><span>⏱️ 6 min</span></div></div>
+      </a>
+    </div>
+    <div id="extraArticles"></div>
+  </div>
+</section>
+
+<footer class="site-footer">
+  <div class="container">
+    <div class="footer-bottom"><p>© 2026 Forsikringoversikt.no</p></div>
+  </div>
+</footer>
+<script src="main.js"></script>
+<script>
+function toggleMenu() { document.getElementById('mobileMenu').classList.toggle('open'); }
+async function loadExtra() {
+  try {
+    const r = await fetch('artikler/index.json');
+    if (!r.ok) return;
+    const arts = await r.json();
+    if (!arts.length) return;
+    document.getElementById('extraArticles').innerHTML = `<div class="articles-grid" style="margin-top:20px">${arts.map(a=>`
+      <a href="artikler/${a.slug}.html" class="article-card">
+        <div class="article-card-img" style="background:${a.color||'#dbeafe'}">${a.emoji||'📋'}</div>
+        <div class="article-card-body"><span class="article-tag">${a.kategori}</span><h3>${a.tittel}</h3><p>${a.ingress||''}</p><div class="article-meta"><span>📅 ${a.dato}</span><span>⏱️ ${a.lesetid}</span></div></div>
+      </a>`).join('')}</div>`;
+  } catch(e) {}
+}
+loadExtra();
+</script>
+</body>
+</html>
